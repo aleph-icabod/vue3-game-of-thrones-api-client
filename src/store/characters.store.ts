@@ -1,7 +1,8 @@
 import type {Character} from "@/api/gameOfThrones/models/Character";
 import {reactive} from "vue";
-import gameOfThronesApi from "@/api/gameOfThrones/GameOfThronesApi";
+import gameOfThronesApi, {aSongOfIceAndFireApi} from "@/api/gameOfThrones/GameOfThronesApi";
 import axios from "axios";
+import type {CharacterDetails} from "@/api/gameOfThrones/models/CharacterDetails";
 
 export interface CharactersState {
     characters: {
@@ -81,6 +82,9 @@ export const charactersStore = reactive<CharactersState>({
         try {
             const {data} = await gameOfThronesApi.get<Character>(`/Characters/${id}`)
             this.ids.list[id] = data
+            const {data: details} = await aSongOfIceAndFireApi.get<CharacterDetails[]>(`/characters?name=${data.fullName}`)
+            this.ids.list[id].details = details;
+
         } catch (err) {
             this.ids.hasError = true;
             if (axios.isAxiosError(err)) {
@@ -93,8 +97,8 @@ export const charactersStore = reactive<CharactersState>({
             this.ids.isLoading = false;
         }
 
-
         return this.ids.list[id];
-    }
+    },
+
 
 });

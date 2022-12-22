@@ -1,3 +1,5 @@
+import type {CharacterDetails} from "@/api/gameOfThrones/models/CharacterDetails";
+
 export type Character = {
     id: number;
     firstName: string;
@@ -7,5 +9,6 @@ export type Character = {
     family: string;
     image: string;
     imageUrl: string;
+    details?: CharacterDetails[];
 };
 
