@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import gameOfThronesApi from "@/api/gameOfThrones/GameOfThronesApi";
-import type {Character} from "@/api/gameOfThrones/models/Character";
+import {useCharacters} from "@/characters/composables/useCharacters";
 
 
-const {data: characters} = await gameOfThronesApi.get<Character[]>('/Characters');
+const {characters, isLoading, errorMessage} = useCharacters();
 
 </script>
 
 <template>
-  <ul>
+  <p v-if="isLoading">Loading</p>
+  <p v-if="errorMessage">{{ errorMessage }}</p>
+  <ul v-if="!isLoading">
     <li v-for="character of characters" :key="character.id">
       {{ character.fullName }} {{ character.family }}
     </li>
