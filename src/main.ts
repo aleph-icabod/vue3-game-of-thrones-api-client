@@ -8,14 +8,15 @@ import {VueQueryPlugin} from "@tanstack/vue-query";
 const app = createApp(App);
 
 
-VueQueryPlugin.install(app,{
+VueQueryPlugin.install(app, {
     queryClientConfig: {
-      defaultOptions: {
-          queries: {
-            cacheTime: 1000*120, //2 minutes,
-            refetchOnReconnect: 'always',
-          },
-      }
+        defaultOptions: {
+            queries: {
+                cacheTime: 1000 * 120, //2 minutes,
+                refetchOnReconnect: 'always',
+                retry: false,
+            },
+        }
     },
 });
 

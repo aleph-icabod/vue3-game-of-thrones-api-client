@@ -1,44 +1,73 @@
-import {onMounted, ref} from "vue";
+import {computed, ref} from "vue";
 import type {Character} from "@/api/gameOfThrones/models/Character";
 import gameOfThronesApi from "@/api/gameOfThrones/GameOfThronesApi";
-import {isAxiosError} from "axios";
-
+import {useQuery} from "@tanstack/vue-query";
+import axios, {AxiosError} from "axios";
 
 const characters = ref<Character[]>([]);
-const isLoading = ref(true);
-const errorMessage = ref<string>();
+const isLoading = ref<boolean>(false);
+const hasError = ref<boolean>(false);
+const errorMessage = ref<string | null>(null);
 
-export const useCharacters = () => {
 
-    onMounted(async () => {
-        await loadCharacters();
-    })
-    const loadCharacters = async () => {
-        if (characters.value.length !== 0) {
-            return;
-        }
-
-        isLoading.value = true;
-
-        try {
-            const data = await gameOfThronesApi.get<Character[]>('/Characters');
-            characters.value = data.data;
-
-        } catch (e) {
-            if (isAxiosError(e)) {
-                errorMessage.value = e.message;
-            } else {
-                errorMessage.value = JSON.stringify(e);
-            }
-        } finally {
-            isLoading.value = false
-        }
+const getCharacters = async (): Promise<Character[]> => {
+    if (characters.value.length > 0) {
+        return characters.value;
     }
 
-
-    return {
-        characters,
-        isLoading,
-        errorMessage
-    }
+    const {data} = await gameOfThronesApi.get<Character[]>('/Characters')
+    return data
 }
+
+const loadedCharacters = (data: Character[] | string) => {
+
+    if (typeof data === 'string') {
+        loadCharactersFailed('unexpected response from api');
+        return
+    }
+
+    characters.value = data;
+    isLoading.value = false;
+    hasError.value = false;
+    errorMessage.value = null;
+};
+
+const loadCharactersFailed = (error: string) => {
+    characters.value = [];
+    isLoading.value = false;
+    hasError.value = true;
+    errorMessage.value = error;
+};
+
+const handleError = (err: AxiosError | string) => {
+    if (axios.isAxiosError(err)) {
+        loadCharactersFailed(err.message)
+        return
+    }
+    loadCharactersFailed(`unexpected api response: ${err}`)
+
+}
+
+const
+    useCharacters = () => {
+
+
+        const {isLoading} = useQuery(
+            ['characters'],
+            getCharacters,
+            {
+                onSuccess: loadedCharacters,
+                onError: handleError
+            }
+        );
+
+        return {
+            characters,
+            isLoading,
+            hasError,
+            errorMessage,
+            count: computed(() => characters.value.length),
+        };
+    };
+
+export default useCharacters;

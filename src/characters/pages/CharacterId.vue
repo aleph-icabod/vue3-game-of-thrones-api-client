@@ -1,32 +1,28 @@
 <script setup lang="ts">
-import {useRoute} from "vue-router";
-import {charactersStore} from "@/store/characters.store";
-import {useQuery} from "@tanstack/vue-query";
-import type {Character} from "@/api/gameOfThrones/models/Character";
-import type {Ref} from "vue";
+import {useRoute, useRouter} from "vue-router";
+
+import useCharacter from "@/characters/composables/useCharacter";
+import {watch} from "vue";
 
 const route = useRoute();
-
+const router=useRouter();
 const props = defineProps<{ title: string, visible: boolean }>();
 const params = route.params as { id: string }
+const {isLoading, character, hasError, errorMessage} = useCharacter(params.id);
 
-
-const resp = useQuery(
-    ['characters', params.id],
-    () => charactersStore.getCharacterByID(params.id),
-);
-
-const character: Ref<Character | undefined> = resp.data;
+watch(hasError,()=>{
+  router.replace("/characters");
+})
 
 
 </script>
 
 <template>
-  <h2 v-if="charactersStore.ids.isLoading">Loading</h2>
+  <h2 v-if="isLoading">Loading</h2>
 
 
-  <div v-if="!charactersStore.ids.isLoading" class="page-content">
-    <h2 v-if="charactersStore.ids.hasError">{{ charactersStore.ids.errorMessage }}</h2>
+  <div v-if="!isLoading" class="page-content">
+    <h2 v-if="hasError">{{ errorMessage }}</h2>
 
     <div class="character" v-if="character">
       <img :src="character.imageUrl" :alt="character.image" class="character-photo">
