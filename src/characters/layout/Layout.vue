@@ -17,11 +17,6 @@ const links: RouteLink[] = charactersRoute.children!.filter(r => {
 </script>
 
 <template>
-  <Navbar
-      :links="links"
-      :showIcon="false"
-  >
-  </Navbar>
   <RouterView/>
 
 

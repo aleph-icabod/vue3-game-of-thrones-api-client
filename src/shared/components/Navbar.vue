@@ -17,8 +17,11 @@ const props = withDefaults(defineProps<Props>(), {
 <template>
 
   <nav>
-    <img v-if="props.showIcon" src="@/assets/logo.svg" height="25" width="25" alt="Vue"/>
-    <span>{{ props.title || '' }}</span>
+    <RouterLink to="/home" class="main-link">
+      <img v-if="props.showIcon" src="@/assets/logo.svg" height="25" width="25" alt="Vue"/>
+      <span>{{ props.title || '' }}</span>
+
+    </RouterLink>
 
 
     <RouterLink
@@ -49,5 +52,15 @@ span {
 
 a {
   margin-right: .5rem;
+}
+
+a:hover{
+  transition: all .5s;
+  background: none;
+  border-bottom: 1px solid whitesmoke;
+}
+
+.main-link{
+  display: flex;
 }
 </style>
