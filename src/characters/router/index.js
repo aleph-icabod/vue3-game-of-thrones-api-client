@@ -7,8 +7,8 @@ export const charactersRoute = {
     component: () => import('@/characters/layout/Layout.vue'),
     redirect: '/characters/list',
     children: [
-        { path: 'by/id', name: 'character-id', component: CharacterId, props: { title: 'By Id', visible: false } },
-        { path: 'list', name: 'character-list', component: CharacterList, props: { title: 'All Characters', visible: true } },
-        { path: 'search', name: 'character-search', component: CharacterSearch, props: { title: 'Search', visible: true } },
+        { path: 'by/:id', name: 'character-id', component: CharacterId, props: { title: 'By Id', visible: false } },
+        { path: '/characters/list', name: 'character-list', component: CharacterList, props: { title: 'All Characters', visible: true } },
+        { path: '/characters/search', name: 'character-search', component: CharacterSearch, props: { title: 'Search', visible: true } },
     ],
 };
