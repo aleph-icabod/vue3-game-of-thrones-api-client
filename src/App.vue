@@ -9,7 +9,7 @@ import {routeLinks} from "@/router/link-routes";
   <div class="wrapper">
     <header>
       <Navbar
-        title="Breaking Bad"
+        title="Game of Thrones"
         :links="routeLinks"
       />
     </header>
