@@ -3,18 +3,22 @@
 import type {RouteLink} from "@/router/link-routes";
 
 interface Props {
+  showIcon?: boolean,
   title?: string,
   links: RouteLink[],
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  showIcon: true,
+  links: () => [],
+});
 </script>
 
 <template>
 
   <nav>
-    <img src="@/assets/logo.svg" height="25" width="25" alt="Vue"/>
-    <span>{{ props.title }}</span>
+    <img v-if="props.showIcon" src="@/assets/logo.svg" height="25" width="25" alt="Vue"/>
+    <span>{{ props.title || '' }}</span>
 
 
     <RouterLink
