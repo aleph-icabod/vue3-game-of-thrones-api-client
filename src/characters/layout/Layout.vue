@@ -22,9 +22,7 @@ const links: RouteLink[] = charactersRoute.children!.filter(r => {
       :showIcon="false"
   >
   </Navbar>
-  <Suspense>
-    <RouterView/>
-  </Suspense>
+  <RouterView/>
 
 
 </template>

@@ -1,32 +1,15 @@
 <script setup lang="ts">
-import {useCharacters} from "@/characters/composables/useCharacters";
-import {useQuery} from "@tanstack/vue-query";
-import gameOfThronesApi from "@/api/gameOfThrones/GameOfThronesApi";
 import CharacterCard from "@/characters/components/CharacterCard.vue";
+import type {Character} from "@/api/gameOfThrones/models/Character";
 
-
-//const {characters, isLoading, errorMessage} = useCharacters();
-
-const {data: characters, isLoading, error: errorMessage} = useQuery(
-    ['characters'],
-    async () => {
-      const {data} = await gameOfThronesApi.get('/Characters')
-      return data
-    },
-    {
-      cacheTime: 1000 * 10,
-      refetchOnReconnect: 'always',
-    }
-);
+const props = defineProps<{ characters: Character[] }>();
 
 </script>
 
 <template>
-  <p v-if="isLoading">Loading</p>
-  <p v-if="errorMessage">{{ errorMessage }}</p>
-  <div class="character-list" v-if="!isLoading">
+  <div class="character-list">
     <CharacterCard
-        v-for="character of characters"
+        v-for="character of props.characters"
         :key="character.id"
         :character="character"
     />
@@ -35,12 +18,13 @@ const {data: characters, isLoading, error: errorMessage} = useQuery(
 
 
 <style scoped>
-.character-list{
+.character-list {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
 }
-.character-list>div{
+
+.character-list > div {
   flex: 1 1 20%;
   max-width: 250px;
 }
